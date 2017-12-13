@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "477618853563",
+    "firebase_url": "https://mycodingchallenge.firebaseio.com",
+    "project_id": "mycodingchallenge",
+    "storage_bucket": "mycodingchallenge.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:477618853563:android:6845928cdff7935a",
+        "android_client_info": {
+          "package_name": "com.example.ihab.mycodingchallenge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "477618853563-noja4ae3uc6tbkgf6vlae74da65cood0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ihab.mycodingchallenge",
+            "certificate_hash": "88ca294d1aa797dfb8a00a7a0b7535f178d4c746"
+          }
+        },
+        {
+          "client_id": "477618853563-o5f4bknd7lncgk2iklmm31r0a8mbhagl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzSTXD4Wr3Kesa4jiR_B8hyInL_WkFTI8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "477618853563-o5f4bknd7lncgk2iklmm31r0a8mbhagl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
