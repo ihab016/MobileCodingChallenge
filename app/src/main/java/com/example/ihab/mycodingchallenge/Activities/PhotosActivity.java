@@ -1,12 +1,16 @@
 package com.example.ihab.mycodingchallenge.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.ihab.mycodingchallenge.Adapters.PhotosAdapter;
 import com.example.ihab.mycodingchallenge.Adapters.RecyclerViewClickListener;
@@ -37,7 +41,11 @@ public class PhotosActivity extends AppCompatActivity {
         //intialize the ui
         intialization();
         // getting the list of the photos in an album
-        getThePhotos(album_id);
+        if(isOnline())
+        {getThePhotos(album_id);}
+        else{
+            Toast.makeText(PhotosActivity.this, "check out your internet connection ", Toast.LENGTH_LONG).show();
+        }
         //implementing a clicklistener for the recyclerview
         listener=new RecyclerViewClickListener() {
             @Override
@@ -90,5 +98,12 @@ public class PhotosActivity extends AppCompatActivity {
                     }
                 }
         ).executeAsync();
+    }
+    //for checking the internet connection
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }

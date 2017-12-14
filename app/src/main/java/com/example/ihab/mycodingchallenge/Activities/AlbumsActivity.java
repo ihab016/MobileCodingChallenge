@@ -1,12 +1,16 @@
 package com.example.ihab.mycodingchallenge.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.ihab.mycodingchallenge.Adapters.AlbumsAdapter;
 import com.example.ihab.mycodingchallenge.Adapters.RecyclerViewClickListener;
@@ -47,7 +51,13 @@ public class AlbumsActivity extends AppCompatActivity {
         // initilaize th ui
         initialization();
         // getting the list of the albums
-        getAllAlbums(User_id);
+        // and checking if the user is connected to the internet
+        if(isOnline())
+        {getAllAlbums(User_id);}
+        else
+        {
+            Toast.makeText(AlbumsActivity.this, "check out your internet connection ", Toast.LENGTH_LONG).show();
+        }
 
         Log_out_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,10 +131,11 @@ public class AlbumsActivity extends AppCompatActivity {
                 }
         ).executeAsync();
     }
-
-    @Override
-    public void onBackPressed() {
-        LoginManager.getInstance().logOut();
-        backToTheLoginActivity();
+     // for checking the internet connection
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }
