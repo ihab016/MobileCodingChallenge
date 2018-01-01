@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.ihab.mycodingchallenge.Activities.LoginActivity">
+    tools:context="com.example.ihab.mycodingchallenge.Views.LoginActivity">
 
     <TextView
         android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package com.example.ihab.mycodingchallenge.Activities;
+package com.example.ihab.mycodingchallenge.Views;
 
 
 import android.app.ProgressDialog;
@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;

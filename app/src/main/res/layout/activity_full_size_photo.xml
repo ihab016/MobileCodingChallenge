@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.ihab.mycodingchallenge.Activities.FullSizePhotoActivity">
+    tools:context="com.example.ihab.mycodingchallenge.Views.FullSizePhotoActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

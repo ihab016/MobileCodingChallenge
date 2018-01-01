@@ -1,4 +1,4 @@
-package com.example.ihab.mycodingchallenge.Activities;
+package com.example.ihab.mycodingchallenge.Views;
 
 import android.content.Context;
 import android.content.Intent;
