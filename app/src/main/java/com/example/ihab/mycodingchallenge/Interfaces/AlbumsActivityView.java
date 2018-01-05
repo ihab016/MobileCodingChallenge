@@ -9,12 +9,19 @@ import java.util.ArrayList;
  */
 
 public interface AlbumsActivityView {
+
     public void initialization();
+
     public void backToTheLoginActivity();
-   public boolean isOnline();
-    public void goToPhotoActivity( int position);
+
+    public boolean isOnline();
+
+    public void goToPhotoActivity(int position);
+
     public void checkingLogin();
+
     public void setListOfAlbums(ArrayList<album> albums);
+
     public void fetchData();
 
 }

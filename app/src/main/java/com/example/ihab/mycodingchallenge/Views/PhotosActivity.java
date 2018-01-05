@@ -14,7 +14,9 @@ import android.widget.Toast;
 
 import com.example.ihab.mycodingchallenge.Adapters.PhotosAdapter;
 import com.example.ihab.mycodingchallenge.Adapters.RecyclerViewClickListener;
+import com.example.ihab.mycodingchallenge.Interfaces.PhotosActivityView;
 import com.example.ihab.mycodingchallenge.POJOs.photo;
+import com.example.ihab.mycodingchallenge.Presenters.PhotoActivityPresenter;
 import com.example.ihab.mycodingchallenge.R;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -26,39 +28,35 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class PhotosActivity extends AppCompatActivity {
+public class PhotosActivity extends AppCompatActivity implements PhotosActivityView {
 
     RecyclerView PhotosRecyclerView;
     RecyclerViewClickListener listener;
     PhotosAdapter photosAdapter;
     ArrayList<photo> photos;
     String album_id;
+    PhotoActivityPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photos);
+        presenter=new PhotoActivityPresenter(this);
         //intialize the ui
-        intialization();
+        initialization();
         // getting the list of the photos in an album
-        if(isOnline())
-        {getThePhotos(album_id);}
-        else{
-            Toast.makeText(PhotosActivity.this, "check out your internet connection ", Toast.LENGTH_LONG).show();
-        }
+        fetchData();
         //implementing a clicklistener for the recyclerview
         listener=new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
                 //going to the full_size_photo_activity and sending to it the photo id
-                Intent intent=new Intent(PhotosActivity.this,FullSizePhotoActivity.class);
-                intent.putExtra("photo_id",photos.get(position).getId());
-                startActivity(intent);
+                goToFullSizePhotoActivity(position);
             }
         };
     }
 
-    private void intialization() {
+    public void initialization() {
 
         album_id=getIntent().getStringExtra("id");
         PhotosRecyclerView=findViewById(R.id.photos_recycler_view);
@@ -66,44 +64,35 @@ public class PhotosActivity extends AppCompatActivity {
         PhotosRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
     }
 
-    public  void getThePhotos (String album_id){
-        //sending a request to the graph api
-        new GraphRequest(
-                AccessToken.getCurrentAccessToken(),
-                "/"+album_id+"/photos?fields=picture{url}",
-                null,
-                HttpMethod.GET,
-                new GraphRequest.Callback() {
-                    public void onCompleted(GraphResponse response) {
-                        Log.d("response", "onCompleted: " + response);
-                        try {
-                            // getting data from the response as json and then parse it to an arraylist
-                            JSONObject data = response.getJSONObject();
-                             photos = new ArrayList<photo>();
-                            JSONArray json_array = (JSONArray) data.getJSONArray("data");
-                            for (int i = 0, size = json_array.length(); i < size; i++)
-                            {
-                                JSONObject Object = json_array.getJSONObject(i);
-                                photos.add(new photo(
-                                        Object.get("picture").toString(),
-                                        Object.get("id").toString())
-                                );
-                            }
-                            //after we got the list of the photos we will set the adapter for our recyclerview
-                            photosAdapter = new PhotosAdapter (PhotosActivity.this,photos,listener);
-                            PhotosRecyclerView.setAdapter(photosAdapter);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-        ).executeAsync();
-    }
+
     //for checking the internet connection
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    // getting the list of the photos in an album
+    public void fetchData(){
+        if(isOnline())
+        {presenter.getThePhotos(album_id);}
+        else{
+            Toast.makeText(PhotosActivity.this, "check out your internet connection ", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void goToFullSizePhotoActivity(int position){
+
+        Intent intent=new Intent(PhotosActivity.this,FullSizePhotoActivity.class);
+        intent.putExtra("photo_id",photos.get(position).getId());
+        startActivity(intent);
+
+    }
+    public void setTheListOfPhotos(ArrayList<photo> photos) {
+        //after we got the list of the photos we will set the adapter for our recyclerview
+        this.photos=photos;
+        photosAdapter = new PhotosAdapter(PhotosActivity.this, photos, listener);
+        PhotosRecyclerView.setAdapter(photosAdapter);
     }
 }
