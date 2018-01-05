@@ -14,7 +14,9 @@ import android.widget.Toast;
 
 import com.example.ihab.mycodingchallenge.Adapters.AlbumsAdapter;
 import com.example.ihab.mycodingchallenge.Adapters.RecyclerViewClickListener;
+import com.example.ihab.mycodingchallenge.Interfaces.AlbumsActivityView;
 import com.example.ihab.mycodingchallenge.POJOs.album;
+import com.example.ihab.mycodingchallenge.Presenters.AlbumsActivityPresenter;
 import com.example.ihab.mycodingchallenge.R;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -27,7 +29,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class AlbumsActivity extends AppCompatActivity {
+public class AlbumsActivity extends AppCompatActivity implements AlbumsActivityView{
 
     RecyclerView AlbumsRecyclerView;
     RecyclerViewClickListener listener;
@@ -35,29 +37,24 @@ public class AlbumsActivity extends AppCompatActivity {
     Button Log_out_button;
     String User_id;
     ArrayList<album> albums;
+    AlbumsActivityPresenter presenter;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_albums);
+        presenter=new AlbumsActivityPresenter(this);
 
         //verify if the user is not connected
-        if (AccessToken.getCurrentAccessToken() == null){
-            backToTheLoginActivity();
-        }
+        checkingLogin();
         // getting the userid from accesstoken
         User_id = AccessToken.getCurrentAccessToken().getUserId();
         // initilaize th ui
         initialization();
-        // getting the list of the albums
-        // and checking if the user is connected to the internet
-        if(isOnline())
-        {getAllAlbums(User_id);}
-        else
-        {
-            Toast.makeText(AlbumsActivity.this, "check out your internet connection ", Toast.LENGTH_LONG).show();
-        }
+        fetchData();
+
 
         Log_out_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,16 +69,14 @@ public class AlbumsActivity extends AppCompatActivity {
         listener=new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
-                 // go to the photos screen
-                Intent intent = new Intent(AlbumsActivity.this , PhotosActivity.class);
-                intent.putExtra("id",albums.get(position).getAlbum_id());
-                startActivity(intent);
+                goToPhotoActivity(position);
             }
         };
 
     }
 
-    private void initialization() {
+    @Override
+    public void initialization() {
 
         Log_out_button=findViewById(R.id.log_out);
         AlbumsRecyclerView=(RecyclerView)findViewById(R.id.albums_recycler_view);
@@ -89,50 +84,59 @@ public class AlbumsActivity extends AppCompatActivity {
         AlbumsRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
     }
 
-    private void backToTheLoginActivity() {
+    @Override
+    public void backToTheLoginActivity() {
 
         Intent intent = new Intent(this,LoginActivity.class);
         startActivity(intent);
     }
 
-    public  void getAllAlbums (String User_iD){
+    // go to the photos screen
+    @Override
+    public void goToPhotoActivity( int position){
 
-        //we will send a request to the graph api using graph request
-        new GraphRequest(
-                AccessToken.getCurrentAccessToken(),
-                "/"+User_iD+"/albums?fields=name,picture{url}",
-                null,
-                HttpMethod.GET,
-                new GraphRequest.Callback() {
-                    public void onCompleted(GraphResponse response) {
-                        try {
-
-                            // we got the json back from the server so we will parse the response in put it in an arraylist
-                            JSONObject data = response.getJSONObject();
-                            albums = new ArrayList<album>();
-                            JSONArray json_Array = (JSONArray) data.getJSONArray("data");
-                            for (int i = 0, size = json_Array.length(); i < size; i++)
-                            {
-                                JSONObject Object = json_Array.getJSONObject(i);
-                                albums.add(new album(
-                                         Object.getJSONObject("picture").getJSONObject("data").get("url").toString()
-                                        ,Object.get("name").toString()
-                                        ,Object.get("id").toString())
-                                );
-                            }
-
-                            //after parsing the json will set the adapter for our recyclerview
-                            albumsAdapter = new AlbumsAdapter(AlbumsActivity.this,albums,listener);
-                            AlbumsRecyclerView.setAdapter(albumsAdapter);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-        ).executeAsync();
+        Intent intent = new Intent(AlbumsActivity.this , PhotosActivity.class);
+        intent.putExtra("id",albums.get(position).getAlbum_id());
+        startActivity(intent);
     }
+
+
+
+
+    // set the adapter for our recyclerview
+    @Override
+    public void setListOfAlbums(ArrayList<album> albums) {
+        this.albums=albums;
+        albumsAdapter = new AlbumsAdapter(AlbumsActivity.this,albums,listener);
+        AlbumsRecyclerView.setAdapter(albumsAdapter);
+    }
+
+    @Override
+    public void checkingLogin() {
+
+        if (AccessToken.getCurrentAccessToken() == null){
+            backToTheLoginActivity();
+        }
+    }
+
+    // and checking if the user is connected to the internet
+    // getting the list of the albums
+    @Override
+    public void fetchData(){
+
+        if(isOnline())
+        {presenter.getAlbums(User_id);}
+        else
+        {
+            Toast.makeText(AlbumsActivity.this, "check out your internet connection ", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
      // for checking the internet connection
+    @Override
     public boolean isOnline() {
+
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();

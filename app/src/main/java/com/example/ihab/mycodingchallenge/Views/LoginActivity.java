@@ -65,12 +65,6 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
 
     }
 
-
-
-
-
-
-
     @Override
     public void checkingLogin() {
 
