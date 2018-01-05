@@ -1,7 +1,7 @@
 # MobileCodingChallenge
 
-This is a sample app to implement the facebook SDK for for Logging and so we will get the list of the albums of the user<br/>
-and the display them and also display the list of all the photos in each album, and then we will use the firebase storage to<br/>
+This is a sample app to implement the facebook SDK for for Logging  and then we will get the list of the albums of the user<br/>
+and then display them and also display the list of all the photos in each album, and then we will use the firebase storage to<br/>
 upload the photos. 
 
 ## Getting Started
