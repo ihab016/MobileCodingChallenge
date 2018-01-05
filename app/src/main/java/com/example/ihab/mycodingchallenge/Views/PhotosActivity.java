@@ -56,6 +56,7 @@ public class PhotosActivity extends AppCompatActivity implements PhotosActivityV
         };
     }
 
+    @Override
     public void initialization() {
 
         album_id=getIntent().getStringExtra("id");
@@ -66,6 +67,7 @@ public class PhotosActivity extends AppCompatActivity implements PhotosActivityV
 
 
     //for checking the internet connection
+    @Override
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -74,6 +76,7 @@ public class PhotosActivity extends AppCompatActivity implements PhotosActivityV
     }
 
     // getting the list of the photos in an album
+    @Override
     public void fetchData(){
         if(isOnline())
         {presenter.getThePhotos(album_id);}
@@ -81,7 +84,7 @@ public class PhotosActivity extends AppCompatActivity implements PhotosActivityV
             Toast.makeText(PhotosActivity.this, "check out your internet connection ", Toast.LENGTH_LONG).show();
         }
     }
-
+    @Override
     public void goToFullSizePhotoActivity(int position){
 
         Intent intent=new Intent(PhotosActivity.this,FullSizePhotoActivity.class);
@@ -89,6 +92,8 @@ public class PhotosActivity extends AppCompatActivity implements PhotosActivityV
         startActivity(intent);
 
     }
+
+    @Override
     public void setTheListOfPhotos(ArrayList<photo> photos) {
         //after we got the list of the photos we will set the adapter for our recyclerview
         this.photos=photos;

@@ -5,10 +5,16 @@ package com.example.ihab.mycodingchallenge.Interfaces;
  */
 
 public interface LoginActivityView {
+
     public void success();
+
     public void cancel();
+
     public void error();
+
     public void checkingLogin();
+
     public void intialization();
+
     public void goToAlbumsActivity();
 }
